@@ -8,10 +8,11 @@
     }
 }(function(ko, exports, undefined) {
     //a bindingProvider that uses something different than data-bind attributes
-    //  bindings - an object that contains the binding classes
+    //  bindings - an object that contains the binding classes, or a routing function that returns a binding class
     //  options - is an object that can include "attribute", virtualAttribute, and "fallback" options
     var classBindingsProvider = function(bindings, options) {
-        var existingProvider = new ko.bindingProvider();
+        var virtualAttribute = "ko class:",
+            existingProvider = new ko.bindingProvider();
 
         options = options || {};
 
@@ -24,9 +25,12 @@
         //fallback to the existing binding provider, if bindings are not found
         this.fallback = options.fallback;
 
-        //this object holds the binding classes
-        this.bindings = bindings || {};
-        
+        //object that holds the binding classes, or a routing function that returns a binding class
+        this.bindings = bindings || (bindings = {});
+
+        //function that returns a binding class, given the class name
+        bindingRouter = typeof bindings == "function" ? bindings : function(className) { return bindings[className]; };
+
         //allow bindings to be registered after instantiation
         this.registerBindings = function(newBindings) {
 	        ko.utils.extend(this.bindings, newBindings);
@@ -74,7 +78,7 @@
                 classes = classes.replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "").replace(/(\s|\u00A0){2,}/g, " ").split(' ');
                 //evaluate each class, build a single object to return
                 for (i = 0, j = classes.length; i < j; i++) {
-                    bindingAccessor = this.bindings[classes[i]];
+                    bindingAccessor = bindingRouter(classes[i], classes);
                     if (bindingAccessor) {
                         binding = typeof bindingAccessor == "function" ? bindingAccessor.call(bindingContext.$data, bindingContext, classes) : bindingAccessor;
                         ko.utils.extend(result, binding);
