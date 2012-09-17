@@ -6,18 +6,18 @@
 <body>
     <div id="content">
         Editable: <input type="checkbox" data-class="editable" />
-        <ul data-class="items">
+        <ul data-class="item.list">
             <li>
-                <input data-class="edit enabled" />
-                <button data-class="delete enabled">Delete</button>
+                <input data-class="item.edit enabled" />
+                <button data-class="item.delete enabled">Delete</button>
             </li>
         </ul>
         <button data-class="add enabled">Add Item</button>
 
         <hr/>
 
-        <!-- ko class: items -->
-        <div data-class="view"></div>
+        <!-- ko class: item.list -->
+        <div data-class="item.view"></div>
         <!-- /ko -->
     </div>
 
@@ -33,7 +33,7 @@
     </div>
 
     <script src="../ext/knockout-2.1.0.js"></script>
-    <script src="../build/knockout-classBindingProvider.min.js"></script>
+    <script src="../build/knockout-classBindingProvider.js"></script>
     <script type="text/javascript">
         (function(ko) {
             //create an object that holds our bindings
@@ -45,20 +45,22 @@
                 enabled: function(context) {
                     return { enable: context.$root.editable };
                 },
-                items: function() {
-                    return { foreach: this.items };
-                },
-                edit: function() {
-                    return { value: this.name };
-                },
-                delete: function(context) {
-                    return { click: context.$parent.deleteItem };
-                },
                 add: function() {
                     return { click: this.addItem };
                 },
-                view: function() {
-                    return { text: this.name };
+                item: {
+                    list: function() {
+                        return { foreach: this.items };
+                    },
+                    edit: function() {
+                        return { value: this.name };
+                    },
+                    delete: function(context) {
+                        return { click: context.$parent.deleteItem };
+                    },
+                    view: function() {
+                        return { text: this.name };
+                    }
                 }
             };
 
@@ -75,11 +77,11 @@
             };
 
             //wrap the bindings in a version that adds some instrumentation
-            for (var prop in bindings) {
+            /*for (var prop in bindings) {
                 if (bindings.hasOwnProperty(prop)) {
                     bindings[prop] = instrumentBinding(prop, bindings[prop], log);
                 }
-            }
+            }*/
 
             //add some bindings for the stats (that are not instrumented themselves)
             bindings.stats = function() { return { foreach: this } };
