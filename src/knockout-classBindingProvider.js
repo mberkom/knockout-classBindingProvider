@@ -11,8 +11,7 @@
     //  bindings - an object that contains the binding classes, or a routing function that returns a binding class
     //  options - is an object that can include "attribute", virtualAttribute, and "fallback" options
     var classBindingsProvider = function(bindings, options) {
-        var virtualAttribute = "ko class:",
-            existingProvider = new ko.bindingProvider();
+        var existingProvider = new ko.bindingProvider();
 
         options = options || {};
 
