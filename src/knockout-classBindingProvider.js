@@ -8,8 +8,8 @@
     }
 }(function(ko, exports, undefined) {
     //a bindingProvider that uses something different than data-bind attributes
-    //  bindings - an object that contains the binding classes, or a routing function that returns a binding class
-    //  options - is an object that can include "attribute", virtualAttribute, and "fallback" options
+    //  bindings - an object that contains the binding classes
+    //  options - is an object that can include "attribute", virtualAttribute, bindingRouter, and "fallback" options
     var classBindingsProvider = function(bindings, options) {
         var existingProvider = new ko.bindingProvider();
 
@@ -24,8 +24,8 @@
         //fallback to the existing binding provider, if bindings are not found
         this.fallback = options.fallback;
 
-        //object that holds the binding classes, or a routing function that returns a binding class
-        this.bindings = bindings || (bindings = {});
+        //object that holds the binding classes
+        this.bindings = bindings || {};
 
         //function that returns a binding class, given the class name and the bindings object
         this.bindingRouter = options.bindingRouter ? options.bindingRouter : function(className, bindings) {
